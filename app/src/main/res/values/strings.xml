@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">SocialNetworkThoughtsAndroidApp</string>
+
+    <string name="username_edit_text_hint">Имя пользователя</string>
+    <string name="username_helper_text">Введите имя пользователя</string>
+
+    <string name="password_edit_text_hint">Пароль</string>
+    <string name="password_helper_text">Введите пароль</string>
+
+    <string name="nickname_edit_text_hint">Никнейм</string>
+    <string name="nickname_helper_text">Введите никнейм</string>
+
+    <string name="posts_will_be_here">Posts will be here…</string>
+
+    <string name="login_button_text">Войти</string>
+    <string name="register_button_text">Зарегистрироваться</string>
+    <string name="back_button">back_button</string>
+
+    <string name="entry">Вход</string>
+    <string name="registration">Регистрация</string>
+
 </resources>
