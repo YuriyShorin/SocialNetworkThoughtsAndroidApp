@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/feed"
+        android:icon="@drawable/baseline_home_filled_24"
+        android:title="@string/home"
+        android:contentDescription="@string/content_description_home" />
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/baseline_search_24"
+        android:title="@string/search"
+        android:contentDescription="@string/content_description_search" />
+
+    <item
+        android:id="@+id/new_post"
+        android:icon="@drawable/outline_add_box_24"
+        android:title="@string/post"
+        android:contentDescription="@string/content_description_post" />
+
+    <item
+        android:id="@+id/notifications"
+        android:icon="@drawable/rounded_notifications_24"
+        android:title="@string/notifications"
+        android:contentDescription="@string/content_description_notifications" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/rounded_account_circle_24"
+        android:title="@string/profile"
+        android:contentDescription="@string/content_description_profile" />
+
+</menu>

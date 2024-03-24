@@ -10,7 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 
 import hse.course.socialnetworkthoughtsandroidapp.databinding.RegisterActivityLayoutBinding
-import hse.course.socialnetworkthoughtsandroidapp.viewmodel.AuthenticationViewModel
+import hse.course.socialnetworkthoughtsandroidapp.viewmodel.authentication.AuthenticationViewModel
 
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ class RegisterActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authenticationViewModel.code.collect { code ->
-                    if (code == 200) {
+                    if (code == 201) {
                         val intent = Intent(applicationContext, LoginActivity::class.java)
                         startActivity(intent)
                     }

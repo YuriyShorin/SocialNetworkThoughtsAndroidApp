@@ -39,7 +39,7 @@
         </activity>
 
         <activity
-            android:name=".ui.posts.PostsActivity"
+            android:name=".ui.socialmedia.SocialMediaActivity"
             android:exported="false" >
         </activity>
 

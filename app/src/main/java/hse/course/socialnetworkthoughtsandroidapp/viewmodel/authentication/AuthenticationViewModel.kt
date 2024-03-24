@@ -1,4 +1,4 @@
-package hse.course.socialnetworkthoughtsandroidapp.viewmodel
+package hse.course.socialnetworkthoughtsandroidapp.viewmodel.authentication
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthenticationViewModel @Inject constructor(private val sharedPreferences: SharedPreferences, private val authenticationRepository: AuthenticationRepository) : ViewModel() {
+class AuthenticationViewModel @Inject constructor(
+    private val sharedPreferences: SharedPreferences,
+    private val authenticationRepository: AuthenticationRepository
+) : ViewModel() {
 
     private val _jwtToken = MutableStateFlow(JwtToken())
     val jwtToken: StateFlow<JwtToken> = _jwtToken.asStateFlow()
@@ -37,34 +38,11 @@ class AuthenticationViewModel @Inject constructor(private val sharedPreferences:
     private val _nicknameErrorMessage = MutableStateFlow("")
     val nicknameErrorMessage: StateFlow<String> = _nicknameErrorMessage.asStateFlow()
 
+    private val _isAuthenticated = MutableStateFlow(false)
+    val isAuthenticated: StateFlow<Boolean> = _isAuthenticated.asStateFlow()
+
     private fun saveJwtToken(token: String) {
         sharedPreferences.edit().putString(SharedPreferencesKeys.JWT_TOKEN.name, token).apply()
-    }
-
-    private fun saveTokenExpiresIn(seconds: Long) {
-        val tokenExpiresIn: LocalDateTime = LocalDateTime.now().plusSeconds(seconds)
-        sharedPreferences.edit().putString(
-            SharedPreferencesKeys.JWT_TOKEN_EXPIRES_IN.name,
-            tokenExpiresIn.format(
-                DateTimeFormatter.ISO_LOCAL_DATE_TIME
-            ).toString()
-        ).apply()
-    }
-
-    fun getJwtToken(): String? {
-        return sharedPreferences.getString(SharedPreferencesKeys.JWT_TOKEN.name, null)
-    }
-
-    fun getTokenExpiresIn(): LocalDateTime? {
-        val jwtTokenExpiresInString: String? =
-            sharedPreferences.getString(SharedPreferencesKeys.JWT_TOKEN_EXPIRES_IN.name, null)
-        var jwtTokenExpiresIn: LocalDateTime? = null
-
-        if (jwtTokenExpiresInString != null) {
-            jwtTokenExpiresIn = LocalDateTime.parse(jwtTokenExpiresInString)
-        }
-
-        return jwtTokenExpiresIn
     }
 
     fun authenticate(username: String, password: String) {
@@ -79,7 +57,8 @@ class AuthenticationViewModel @Inject constructor(private val sharedPreferences:
         }
 
         viewModelScope.launch {
-            val jwtToken: JwtToken? = authenticationRepository.authenticate(username, password)
+            val jwtToken: JwtToken? =
+                authenticationRepository.authenticate(username, password)
             _jwtToken.value = jwtToken ?: JwtToken()
 
             if (jwtToken == null) {
@@ -88,9 +67,8 @@ class AuthenticationViewModel @Inject constructor(private val sharedPreferences:
                 return@launch
             }
 
-            if (jwtToken.token != null && jwtToken.expiresIn != null) {
-                saveJwtToken(jwtToken.token)
-                saveTokenExpiresIn(jwtToken.expiresIn)
+            if (jwtToken.jwtToken != null) {
+                saveJwtToken(jwtToken.jwtToken)
             }
         }
     }
@@ -116,17 +94,22 @@ class AuthenticationViewModel @Inject constructor(private val sharedPreferences:
         }
 
         viewModelScope.launch {
-            val code: Int = authenticationRepository.register(username, password, nickname)
-            _code.value = code
+            _code.value = authenticationRepository.register(username, password, nickname)
 
-            if (code == 409) {
+            if (code.value == 409) {
                 _usernameErrorMessage.value = "Пользователь уже существует"
                 return@launch
             }
 
-            if (code != 200) {
+            if (code.value != 201) {
                 _usernameErrorMessage.value = "Ошибка сервера"
             }
+        }
+    }
+
+    fun isAuthenticated() {
+        viewModelScope.launch {
+            _isAuthenticated.value = authenticationRepository.isAuthenticated()
         }
     }
 }

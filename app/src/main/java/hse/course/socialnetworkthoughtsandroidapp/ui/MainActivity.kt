@@ -5,14 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-
 import hse.course.socialnetworkthoughtsandroidapp.ui.authentication.LoginActivity
-import hse.course.socialnetworkthoughtsandroidapp.ui.posts.PostsActivity
-import hse.course.socialnetworkthoughtsandroidapp.viewmodel.AuthenticationViewModel
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.SocialMediaActivity
+import hse.course.socialnetworkthoughtsandroidapp.viewmodel.authentication.AuthenticationViewModel
 
-import java.time.LocalDateTime
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -25,19 +26,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val jwtToken: String? = authenticationViewModel.getJwtToken()
-        val jwtTokenExpiresIn: LocalDateTime? = authenticationViewModel.getTokenExpiresIn()
+        authenticationViewModel.isAuthenticated()
 
-        val intent: Intent =
-            if ((jwtToken == null) || (jwtTokenExpiresIn == null) || jwtTokenExpiresIn.isBefore(
-                    LocalDateTime.now()
-                )
-            ) {
-                Intent(this, LoginActivity::class.java)
-            } else {
-                Intent(this, PostsActivity::class.java)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                authenticationViewModel.isAuthenticated.collect { isAuthenticated ->
+                    if (isAuthenticated) {
+                        val intent = Intent(applicationContext, SocialMediaActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(applicationContext, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
             }
-
-        startActivity(intent)
+        }
     }
 }

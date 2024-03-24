@@ -1,16 +1,22 @@
 <resources>
     <string name="app_name">SocialNetworkThoughtsAndroidApp</string>
 
-    <string name="username_edit_text_hint">Имя пользователя</string>
-    <string name="username_helper_text">Введите имя пользователя</string>
+    <string name="username_input_hint">Имя пользователя</string>
+    <string name="username_input_helper_text">Введите имя пользователя</string>
 
-    <string name="password_edit_text_hint">Пароль</string>
-    <string name="password_helper_text">Введите пароль</string>
+    <string name="password_input_hint">Пароль</string>
+    <string name="password_input_helper_text">Введите пароль</string>
 
-    <string name="nickname_edit_text_hint">Никнейм</string>
-    <string name="nickname_helper_text">Введите никнейм</string>
+    <string name="nickname_input_hint">Никнейм</string>
+    <string name="nickname_input_helper_text">Введите никнейм</string>
 
-    <string name="posts_will_be_here">Posts will be here…</string>
+    <string name="theme_input_hint">Тема</string>
+    <string name="theme_input_helper_text">Введите тему поста</string>
+
+    <string name="content_input_hint">Пост</string>
+    <string name="content_input_helper_text">Введите содержимое поста</string>
+
+    <string name="search_input_hint">Поиск…</string>
 
     <string name="login_button_text">Войти</string>
     <string name="register_button_text">Зарегистрироваться</string>
@@ -18,5 +24,22 @@
 
     <string name="entry">Вход</string>
     <string name="registration">Регистрация</string>
+
+    <string name="subscribes">Подписки %1$d</string>
+    <string name="subscribers">Подписчики %1$d</string>
+
+    <string name="home">Главная</string>
+    <string name="content_description_home">Кнопка для перехода на главную страницу</string>
+    <string name="search">Поиск</string>
+    <string name="content_description_search">Кнопка для перехода к поиску</string>
+    <string name="post">Новый пост</string>
+    <string name="content_description_post">Кнопка для перехода к созданию нового поста</string>
+    <string name="notifications">Уведомления</string>
+    <string name="content_description_notifications">Кнопка для перехода к уведомлениям</string>
+    <string name="profile">Профиль</string>
+    <string name="content_description_profile">Кнопка для перехода к профилю</string>
+    <string name="check">Сохранить</string>
+    <string name="content_description_check">Сохранить пост</string>
+    <string name="settings_button_description">settings</string>
 
 </resources>

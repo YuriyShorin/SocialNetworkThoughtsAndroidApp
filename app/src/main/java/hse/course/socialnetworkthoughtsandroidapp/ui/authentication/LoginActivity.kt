@@ -7,11 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+
 import dagger.hilt.android.AndroidEntryPoint
 
 import hse.course.socialnetworkthoughtsandroidapp.databinding.LoginActivityLayoutBinding
-import hse.course.socialnetworkthoughtsandroidapp.ui.posts.PostsActivity
-import hse.course.socialnetworkthoughtsandroidapp.viewmodel.AuthenticationViewModel
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.SocialMediaActivity
+import hse.course.socialnetworkthoughtsandroidapp.viewmodel.authentication.AuthenticationViewModel
 
 import kotlinx.coroutines.launch
 
@@ -42,9 +43,9 @@ class LoginActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                authenticationViewModel.jwtToken.collect { token ->
-                    if (token.token != null) {
-                        val intent = Intent(applicationContext, PostsActivity::class.java)
+                authenticationViewModel.jwtToken.collect { jwtToken ->
+                    if (jwtToken.jwtToken != null) {
+                        val intent = Intent(applicationContext, SocialMediaActivity::class.java)
                         startActivity(intent)
                     }
                 }
@@ -54,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authenticationViewModel.usernameErrorMessage.collect { usernameErrorMessage ->
-                    if (usernameErrorMessage != "") {
+                    if (usernameErrorMessage.isNotEmpty()) {
                         binding.usernameTextInputLayout.error = usernameErrorMessage
                     }
                 }
@@ -64,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authenticationViewModel.passwordErrorMessage.collect { passwordErrorMessage ->
-                    if (passwordErrorMessage != "") {
+                    if (passwordErrorMessage.isNotEmpty()) {
                         binding.passwordTextInputLayout.error = passwordErrorMessage
                     }
                 }

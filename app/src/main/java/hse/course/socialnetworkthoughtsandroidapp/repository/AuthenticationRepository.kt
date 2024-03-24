@@ -1,13 +1,23 @@
 package hse.course.socialnetworkthoughtsandroidapp.repository
 
+import android.content.SharedPreferences
+
 import hse.course.socialnetworkthoughtsandroidapp.api.AuthenticationService
 import hse.course.socialnetworkthoughtsandroidapp.model.JwtToken
 import hse.course.socialnetworkthoughtsandroidapp.model.LoginUserCredentials
 import hse.course.socialnetworkthoughtsandroidapp.model.RegisterUserCredentials
+import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
 
 import javax.inject.Inject
 
-class AuthenticationRepository @Inject constructor(private val authenticationService: AuthenticationService) {
+class AuthenticationRepository @Inject constructor(
+    private val sharedPreferences: SharedPreferences,
+    private val authenticationService: AuthenticationService
+) {
+
+    private fun getJwtToken(): String? {
+        return sharedPreferences.getString(SharedPreferencesKeys.JWT_TOKEN.name, null)
+    }
 
     suspend fun authenticate(username: String, password: String): JwtToken? {
         var jwtToken: JwtToken? = null
@@ -33,5 +43,9 @@ class AuthenticationRepository @Inject constructor(private val authenticationSer
             )
 
         return response.code()
+    }
+
+    fun isAuthenticated(): Boolean {
+        return false
     }
 }

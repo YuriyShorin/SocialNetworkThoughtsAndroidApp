@@ -10,6 +10,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 import hse.course.socialnetworkthoughtsandroidapp.api.AuthenticationService
+import hse.course.socialnetworkthoughtsandroidapp.api.FeedService
+import hse.course.socialnetworkthoughtsandroidapp.api.PostService
+import hse.course.socialnetworkthoughtsandroidapp.api.ProfileService
+import hse.course.socialnetworkthoughtsandroidapp.api.SearchService
 import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
 
 import javax.inject.Singleton
@@ -31,5 +35,29 @@ class DIModules {
     @Provides
     fun provideAuthenticationService(): AuthenticationService {
         return AuthenticationService.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideProfileService(): ProfileService {
+        return ProfileService.create()
+    }
+
+    @Singleton
+    @Provides
+    fun providePostService(): PostService {
+        return PostService.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSearchService(): SearchService {
+        return SearchService.create()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFeedService(): FeedService {
+        return FeedService.create()
     }
 }
