@@ -9,8 +9,5 @@ data class Profile(
     val description: String? = null,
     val subscribes: Int? = null,
     val subscribers: Int? = null,
-    val posts: List<Post>? = null
+    val posts: MutableList<Post>? = null
 )
-
-
-

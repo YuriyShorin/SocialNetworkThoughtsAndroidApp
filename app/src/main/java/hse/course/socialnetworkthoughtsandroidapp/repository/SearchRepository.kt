@@ -2,6 +2,7 @@ package hse.course.socialnetworkthoughtsandroidapp.repository
 
 import android.content.SharedPreferences
 import hse.course.socialnetworkthoughtsandroidapp.api.SearchService
+import hse.course.socialnetworkthoughtsandroidapp.model.Feed
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
 import javax.inject.Inject
@@ -25,5 +26,17 @@ class SearchRepository @Inject constructor(
         }
 
         return profiles
+    }
+
+    suspend fun searchPosts(theme: String): List<Feed>? {
+        val jwtToken = getJwtToken()
+        var feed: List<Feed>? = null
+
+        val response = searchService.searchPosts("Bearer $jwtToken", theme)
+        if (response.code() == 200) {
+            feed = response.body()
+        }
+
+        return feed
     }
 }

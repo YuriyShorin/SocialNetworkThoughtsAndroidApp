@@ -45,7 +45,10 @@ class AuthenticationRepository @Inject constructor(
         return response.code()
     }
 
-    fun isAuthenticated(): Boolean {
-        return false
+    suspend fun isAuthenticated(): Boolean {
+        val jwtToken = getJwtToken() ?: return false
+        val response = authenticationService.me("Bearer $jwtToken")
+
+        return response.code() == 200
     }
 }

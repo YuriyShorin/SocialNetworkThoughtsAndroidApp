@@ -15,7 +15,13 @@ import java.util.UUID
 interface ProfileService {
 
     @GET("api/v1/profile")
-    suspend fun getProfile(@Header("Authorization") authorization: String): Response<Profile>
+    suspend fun getCurrentProfile(@Header("Authorization") authorization: String): Response<Profile>
+
+    @GET("api/v1/profile/{profileId}")
+    suspend fun getProfile(
+        @Header("Authorization") authorization: String,
+        @Path("profileId") profileId: UUID
+    ): Response<Profile>
 
     @POST("api/v1/profile/subscribe/{profileId}")
     suspend fun subscribe(

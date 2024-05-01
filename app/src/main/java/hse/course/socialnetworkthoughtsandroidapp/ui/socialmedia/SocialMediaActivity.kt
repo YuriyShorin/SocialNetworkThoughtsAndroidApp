@@ -9,7 +9,7 @@ import hse.course.socialnetworkthoughtsandroidapp.databinding.SocialMediaActivit
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.FeedFragment
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.NewPostFragment
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.NotificationFragment
-import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.ProfileFragment
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CurrentProfileFragment
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.SearchFragment
 
 @AndroidEntryPoint
@@ -59,7 +59,7 @@ class SocialMediaActivity : AppCompatActivity() {
 
                 R.id.profile -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_holder, ProfileFragment()).commit()
+                        .replace(R.id.fragment_holder, CurrentProfileFragment()).commit()
                     true
                 }
 

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import hse.course.socialnetworkthoughtsandroidapp.api.PostService
 import hse.course.socialnetworkthoughtsandroidapp.model.CreatePost
 import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
+import okhttp3.MultipartBody
 import java.util.UUID
 import javax.inject.Inject
 
@@ -22,6 +23,12 @@ class PostRepository @Inject constructor(
         return response.code()
     }
 
+    suspend fun createWithFiles(theme: String, content: String, multipartBody: MultipartBody): Int {
+        val jwtToken = getJwtToken() ?: return 403
+        val response = postService.createPostWithFiles("Bearer $jwtToken", theme, content, multipartBody)
+        return response.code()
+    }
+
     suspend fun likePost(postId: UUID): Int {
         val jwtToken = getJwtToken() ?: return 403
         val response = postService.likePost("Bearer $jwtToken", postId)
@@ -31,6 +38,12 @@ class PostRepository @Inject constructor(
     suspend fun unlikePost(postId: UUID): Int {
         val jwtToken = getJwtToken() ?: return 403
         val response = postService.unlikePost("Bearer $jwtToken", postId)
+        return response.code()
+    }
+
+    suspend fun deletePost(postId: UUID) : Int {
+        val jwtToken = getJwtToken() ?: return 403
+        val response = postService.deletePost("Bearer $jwtToken", postId)
         return response.code()
     }
 }

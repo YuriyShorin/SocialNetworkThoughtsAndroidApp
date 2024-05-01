@@ -1,5 +1,6 @@
 package hse.course.socialnetworkthoughtsandroidapp.api
 
+import hse.course.socialnetworkthoughtsandroidapp.model.Feed
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -15,6 +16,12 @@ interface SearchService {
         @Header("Authorization") authorization: String,
         @Path("nickname") nickname: String
     ): Response<List<SearchProfile>>
+
+    @GET("api/v1/search/posts/{theme}")
+    suspend fun searchPosts(
+        @Header("Authorization") authorization: String,
+        @Path("theme") theme: String
+    ): Response<List<Feed>>
 
     companion object Factory {
 

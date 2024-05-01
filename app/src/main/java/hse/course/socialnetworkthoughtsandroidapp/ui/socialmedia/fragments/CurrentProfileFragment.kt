@@ -12,15 +12,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hse.course.socialnetworkthoughtsandroidapp.R
-import hse.course.socialnetworkthoughtsandroidapp.databinding.ProfileFragmentLayoutBinding
+import hse.course.socialnetworkthoughtsandroidapp.databinding.CurrentProfileFragmentLayoutBinding
 import hse.course.socialnetworkthoughtsandroidapp.viewmodel.SocialMediaViewModel
 
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment() {
+class CurrentProfileFragment : Fragment() {
 
-    private lateinit var binding: ProfileFragmentLayoutBinding
+    private lateinit var binding: CurrentProfileFragmentLayoutBinding
 
     private val socialMediaViewModel: SocialMediaViewModel by viewModels()
 
@@ -29,7 +29,7 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ProfileFragmentLayoutBinding.inflate(inflater)
+        binding = CurrentProfileFragmentLayoutBinding.inflate(inflater)
         return binding.root
     }
 
@@ -42,7 +42,7 @@ class ProfileFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                socialMediaViewModel.profile.collect { profile ->
+                socialMediaViewModel.currentProfile.collect { profile ->
                     binding.profileAppBar.title = profile.nickname
                     binding.statusTextView.text = profile.status
                     binding.subscribesButton.text =
@@ -61,6 +61,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        socialMediaViewModel.getProfile()
+        socialMediaViewModel.getCurrentProfile()
     }
 }

@@ -11,14 +11,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import hse.course.socialnetworkthoughtsandroidapp.databinding.SearchFragmentLayoutBinding
+import hse.course.socialnetworkthoughtsandroidapp.databinding.SearchProfileFragmentLayoutBinding
 import hse.course.socialnetworkthoughtsandroidapp.viewmodel.SocialMediaViewModel
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchProfilesFragment : Fragment() {
 
-    private lateinit var binding: SearchFragmentLayoutBinding
+    private lateinit var binding: SearchProfileFragmentLayoutBinding
 
     private val socialMediaViewModel: SocialMediaViewModel by viewModels()
 
@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = SearchFragmentLayoutBinding.inflate(inflater)
+        binding = SearchProfileFragmentLayoutBinding.inflate(inflater)
         return binding.root
     }
 
@@ -35,7 +35,7 @@ class SearchFragment : Fragment() {
         val linearLayoutManager = LinearLayoutManager(this.context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
 
-        binding.profilesRecyclerView.layoutManager = linearLayoutManager
+        binding.searchProfilesRecyclerView.layoutManager = linearLayoutManager
 
         binding.searchButton.setOnClickListener {
             val nickname = binding.searchInputLayout.editText?.text.toString()
@@ -44,8 +44,8 @@ class SearchFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                socialMediaViewModel.profilesAdapter.collect { profilesAdapter ->
-                    binding.profilesRecyclerView.adapter = profilesAdapter
+                socialMediaViewModel.searchProfilesAdapter.collect { searchProfilesAdapter ->
+                    binding.searchProfilesRecyclerView.adapter = searchProfilesAdapter
                 }
             }
         }

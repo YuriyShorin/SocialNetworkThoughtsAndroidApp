@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        authenticationViewModel.isAuthenticated()
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 authenticationViewModel.isAuthenticated.collect { isAuthenticated ->
@@ -41,5 +39,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        authenticationViewModel.isAuthenticated()
     }
 }

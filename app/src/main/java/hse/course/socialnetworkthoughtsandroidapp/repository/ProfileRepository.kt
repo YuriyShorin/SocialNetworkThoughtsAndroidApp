@@ -18,11 +18,23 @@ class ProfileRepository @Inject constructor(
         return sharedPreferences.getString(SharedPreferencesKeys.JWT_TOKEN.name, null)
     }
 
-    suspend fun getProfile(): Profile? {
+    suspend fun getCurrentProfile(): Profile? {
         val jwtToken = getJwtToken()
         var profile: Profile? = null
 
-        val response = profileService.getProfile("Bearer $jwtToken")
+        val response = profileService.getCurrentProfile("Bearer $jwtToken")
+        if (response.code() == 200) {
+            profile = response.body()
+        }
+
+        return profile
+    }
+
+    suspend fun getProfile(profileId: UUID) :Profile? {
+        val jwtToken = getJwtToken()
+        var profile: Profile? = null
+
+        val response = profileService.getProfile("Bearer $jwtToken", profileId)
         if (response.code() == 200) {
             profile = response.body()
         }
