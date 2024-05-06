@@ -62,6 +62,11 @@ class FeedAdapter(
         feedViewHolder.comments.text = feed[position].comments.toString()
         feedViewHolder.reposts.text = feed[position].reposts.toString()
         feedViewHolder.views.text = feed[position].reposts.toString()
+        if(feed[position].isLiked) {
+            feedViewHolder.likeButton.setImageResource(R.drawable.heart)
+        } else {
+            feedViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
+        }
         if (feed[position].createdAt.equals(feed[position].editedAt)) {
             feedViewHolder.postedTime.text = feed[position].createdAt.toString()
         } else {

@@ -73,6 +73,11 @@ class CurrentProfilePostsAdapter(
         currentProfilePostsViewHolder.reposts.text = posts[position].reposts.toString()
         currentProfilePostsViewHolder.views.text = posts[position].reposts.toString()
 
+        if(posts[position].isLiked) {
+            currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart)
+        } else {
+            currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
+        }
         if (posts[position].createdAt.equals(posts[position].editedAt)) {
             currentProfilePostsViewHolder.postedTime.text = posts[position].createdAt.toString()
         } else {

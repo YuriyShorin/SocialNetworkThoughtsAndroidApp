@@ -55,36 +55,42 @@ class PostsAdapter(
     }
 
     override fun onBindViewHolder(
-        currentProfilePostsViewHolder: PostsViewHolder,
+        postsViewHolder: PostsViewHolder,
         position: Int
     ) {
-        currentProfilePostsViewHolder.nickname.text = profile.nickname
-        currentProfilePostsViewHolder.theme.text = posts[position].theme
-        currentProfilePostsViewHolder.content.text = posts[position].content
-        currentProfilePostsViewHolder.likes.text = posts[position].likes.toString()
-        currentProfilePostsViewHolder.comments.text = posts[position].comments.toString()
-        currentProfilePostsViewHolder.reposts.text = posts[position].reposts.toString()
-        currentProfilePostsViewHolder.views.text = posts[position].reposts.toString()
+        postsViewHolder.nickname.text = profile.nickname
+        postsViewHolder.theme.text = posts[position].theme
+        postsViewHolder.content.text = posts[position].content
+        postsViewHolder.likes.text = posts[position].likes.toString()
+        postsViewHolder.comments.text = posts[position].comments.toString()
+        postsViewHolder.reposts.text = posts[position].reposts.toString()
+        postsViewHolder.views.text = posts[position].reposts.toString()
 
-        if (posts[position].createdAt.equals(posts[position].editedAt)) {
-            currentProfilePostsViewHolder.postedTime.text = posts[position].createdAt.toString()
+        if(posts[position].isLiked) {
+            postsViewHolder.likeButton.setImageResource(R.drawable.heart)
         } else {
-            currentProfilePostsViewHolder.postedTime.text = posts[position].editedAt.toString()
+            postsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
         }
 
-        currentProfilePostsViewHolder.likeButton.setOnClickListener {
+        if (posts[position].createdAt.equals(posts[position].editedAt)) {
+            postsViewHolder.postedTime.text = posts[position].createdAt.toString()
+        } else {
+            postsViewHolder.postedTime.text = posts[position].editedAt.toString()
+        }
+
+        postsViewHolder.likeButton.setOnClickListener {
             if (posts[position].isLiked) {
                 unlikePost(posts[position].id)
                 posts[position].isLiked = false
                 posts[position].likes--
-                currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
+                postsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
             } else {
                 likePost(posts[position].id)
                 posts[position].isLiked = true
                 posts[position].likes++
-                currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart)
+                postsViewHolder.likeButton.setImageResource(R.drawable.heart)
             }
-            currentProfilePostsViewHolder.likes.text = posts[position].likes.toString()
+            postsViewHolder.likes.text = posts[position].likes.toString()
         }
     }
 
