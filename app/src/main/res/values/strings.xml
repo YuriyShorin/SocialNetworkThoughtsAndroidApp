@@ -41,5 +41,7 @@
     <string name="check">Сохранить</string>
     <string name="content_description_check">Сохранить пост</string>
     <string name="settings_button_description">settings</string>
+    <string name="remove">Удалить</string>
+    <string name="remove_post">Удалить пост</string>
 
 </resources>

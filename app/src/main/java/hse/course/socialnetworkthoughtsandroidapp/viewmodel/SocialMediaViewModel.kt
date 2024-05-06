@@ -5,13 +5,11 @@ import android.content.Intent
 import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hse.course.socialnetworkthoughtsandroidapp.adapter.CurrentProfilePostsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.FeedAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.PostsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.SearchProfilesAdapter
-import hse.course.socialnetworkthoughtsandroidapp.model.CreatePost
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.repository.FeedRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.PostRepository
@@ -24,9 +22,10 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.util.UUID
 
+import java.util.UUID
 import javax.inject.Inject
+
 
 @HiltViewModel
 class SocialMediaViewModel @Inject constructor(
@@ -123,40 +122,32 @@ class SocialMediaViewModel @Inject constructor(
         this.clipData = data?.clipData
     }
 
-    private fun getMultipartBodyFromData(): MultipartBody {
-        val builder = MultipartBody.Builder()
-        builder.setType(MultipartBody.FORM)
+    private fun getFilesFromData(): List<MultipartBody.Part>? {
+        if (clipData == null || clipData?.itemCount == 0) {
+            return null
+        }
 
+        val files = emptyList<MultipartBody.Part>().toMutableList()
         for (i: Int in 0..<clipData?.itemCount!!) {
             val uri = clipData?.getItemAt(i)?.uri
             val file = uri?.toFile()
 
-            file?.let {
-                RequestBody.create(
-                    MediaType.parse("multipart/form-data"),
-                    it
-                )
-            }?.let {
-                builder.addFormDataPart(
-                    "files",
-                    file.name,
-                    it
-                )
+            if (file != null) {
+                val fileBody = RequestBody.create(MediaType.parse("image/*"), file)
+                files.add(MultipartBody.Part.createFormData("files", file.name, fileBody))
             }
         }
-        return builder.build()
+
+        return files
     }
 
+
     fun createPost(theme: String, content: String) {
-        if (clipData != null && clipData?.itemCount!! > 0) {
-            val multipartBody = getMultipartBodyFromData()
-            viewModelScope.launch {
-                postRepository.createWithFiles(theme, content, multipartBody)
-            }
-        } else {
-            viewModelScope.launch {
-                _code.value = postRepository.createPost(CreatePost(theme, content))
-            }
+        val themeBody = RequestBody.create(MediaType.parse("text/plain"), theme)
+        val contentBody = RequestBody.create(MediaType.parse("text/plain"), content)
+        val files: List<MultipartBody.Part>? = getFilesFromData()
+        viewModelScope.launch {
+            postRepository.createPost(themeBody, contentBody, files)
         }
     }
 

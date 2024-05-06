@@ -1,11 +1,10 @@
 package hse.course.socialnetworkthoughtsandroidapp.api
 
-import hse.course.socialnetworkthoughtsandroidapp.model.CreatePost
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -16,19 +15,13 @@ import java.util.UUID
 
 interface PostService {
 
+    @Multipart
     @POST("api/v1/post")
     suspend fun createPost(
         @Header("Authorization") authorization: String,
-        @Body post: CreatePost
-    ): Response<Void>
-
-    @Multipart
-    @POST("api/v1/post/withFiles")
-    suspend fun createPostWithFiles(
-        @Header("Authorization") authorization: String,
-        @Part("theme") theme: String,
-        @Part("content") content: String,
-        @Part("files") files: MultipartBody
+        @Part("theme") theme: RequestBody,
+        @Part("content") content: RequestBody,
+        @Part files: List<MultipartBody.Part>?
     ): Response<Void>
 
     @POST("api/v1/post/like/{postId}")
