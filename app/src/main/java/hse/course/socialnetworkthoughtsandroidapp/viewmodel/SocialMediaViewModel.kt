@@ -9,8 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hse.course.socialnetworkthoughtsandroidapp.adapter.CurrentProfilePostsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.FeedAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.PostsAdapter
-import hse.course.socialnetworkthoughtsandroidapp.adapter.SearchProfilesAdapter
+import hse.course.socialnetworkthoughtsandroidapp.adapter.ProfilesAdapter
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
+import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.repository.FeedRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.PostRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.ProfileRepository
@@ -37,13 +38,21 @@ class SocialMediaViewModel @Inject constructor(
     ViewModel() {
 
     private val _searchProfilesAdapter =
-        MutableStateFlow(SearchProfilesAdapter(ArrayList(), ::subscribe, ::unsubscribe))
-    val searchProfilesAdapter: StateFlow<SearchProfilesAdapter> =
-        _searchProfilesAdapter.asStateFlow()
+        MutableStateFlow(ProfilesAdapter(ArrayList(), ::subscribe, ::unsubscribe))
+    val searchProfilesAdapter: StateFlow<ProfilesAdapter> =
+        this._searchProfilesAdapter.asStateFlow()
 
     private val _searchPostsAdapter =
         MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost))
     val searchPostsAdapter: StateFlow<FeedAdapter> = _searchPostsAdapter.asStateFlow()
+
+    private val _subscriptionsAdapter =
+        MutableStateFlow(ProfilesAdapter(ArrayList(), ::subscribe, ::unsubscribe))
+    val subscriptionsAdapter: StateFlow<ProfilesAdapter> = _subscriptionsAdapter.asStateFlow()
+
+    private val _subscribersAdapter =
+        MutableStateFlow(ProfilesAdapter(ArrayList(), ::subscribe, ::unsubscribe))
+    val subscribersAdapter: StateFlow<ProfilesAdapter> = _subscribersAdapter.asStateFlow()
 
     private val _feedAdapter = MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost))
     val feedAdapter: StateFlow<FeedAdapter> = _feedAdapter.asStateFlow()
@@ -81,7 +90,6 @@ class SocialMediaViewModel @Inject constructor(
     val postsAdapter: StateFlow<PostsAdapter> =
         _postsAdapter.asStateFlow()
 
-
     private val _code = MutableStateFlow(0)
     val code: StateFlow<Int> = _code.asStateFlow()
 
@@ -118,6 +126,81 @@ class SocialMediaViewModel @Inject constructor(
         }
     }
 
+    fun createPost(theme: String, content: String) {
+        val themeBody = RequestBody.create(MediaType.parse("text/plain"), theme)
+        val contentBody = RequestBody.create(MediaType.parse("text/plain"), content)
+        val files: List<MultipartBody.Part>? = getFilesFromData()
+        viewModelScope.launch {
+            postRepository.createPost(themeBody, contentBody, files)
+        }
+    }
+
+    fun searchProfiles(nickname: String) {
+        if (nickname.isEmpty()) {
+            return
+        }
+
+        viewModelScope.launch {
+            val profiles = searchRepository.searchProfiles(nickname)
+            if (profiles != null) {
+                this@SocialMediaViewModel._searchProfilesAdapter.value =
+                    ProfilesAdapter(profiles, ::subscribe, ::unsubscribe)
+            }
+        }
+    }
+
+    fun searchPosts(theme: String) {
+        if (theme.isEmpty()) {
+            return
+        }
+
+        viewModelScope.launch {
+            val feed = searchRepository.searchPosts(theme)
+            if (feed != null) {
+                _searchPostsAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
+            }
+        }
+    }
+
+    fun getSubscriptions(profileId: UUID?) {
+        viewModelScope.launch {
+            val profiles: List<SearchProfile>? = if (profileId == null) {
+                profileRepository.getCurrentProfileSubscriptions()
+            } else {
+                profileRepository.getProfileSubscriptions(profileId)
+            }
+
+            if (profiles != null) {
+                this@SocialMediaViewModel._subscriptionsAdapter.value =
+                    ProfilesAdapter(profiles, ::subscribe, ::unsubscribe)
+            }
+        }
+    }
+
+    fun getSubscribers(profileId: UUID?) {
+        viewModelScope.launch {
+            val profiles: List<SearchProfile>? = if (profileId == null) {
+                profileRepository.getCurrentProfileSubscribers()
+            } else {
+                profileRepository.getProfileSubscribers(profileId)
+            }
+
+            if (profiles != null) {
+                this@SocialMediaViewModel._subscribersAdapter.value =
+                    ProfilesAdapter(profiles, ::subscribe, ::unsubscribe)
+            }
+        }
+    }
+
+    fun getFeed() {
+        viewModelScope.launch {
+            val feed = feedRepository.getFeed()
+            if (feed != null) {
+                _feedAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
+            }
+        }
+    }
+
     fun setClipData(data: Intent?) {
         this.clipData = data?.clipData
     }
@@ -141,43 +224,6 @@ class SocialMediaViewModel @Inject constructor(
         return files
     }
 
-
-    fun createPost(theme: String, content: String) {
-        val themeBody = RequestBody.create(MediaType.parse("text/plain"), theme)
-        val contentBody = RequestBody.create(MediaType.parse("text/plain"), content)
-        val files: List<MultipartBody.Part>? = getFilesFromData()
-        viewModelScope.launch {
-            postRepository.createPost(themeBody, contentBody, files)
-        }
-    }
-
-    fun searchProfiles(nickname: String) {
-        if (nickname.isEmpty()) {
-            return
-        }
-
-        viewModelScope.launch {
-            val profiles = searchRepository.searchProfiles(nickname)
-            if (profiles != null) {
-                _searchProfilesAdapter.value =
-                    SearchProfilesAdapter(profiles, ::subscribe, ::unsubscribe)
-            }
-        }
-    }
-
-    fun searchPosts(theme: String) {
-        if (theme.isEmpty()) {
-            return
-        }
-
-        viewModelScope.launch {
-            val feed = searchRepository.searchPosts(theme)
-            if (feed != null) {
-                _searchPostsAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
-            }
-        }
-    }
-
     private fun subscribe(id: UUID) {
         viewModelScope.launch {
             profileRepository.subscribe(id)
@@ -187,15 +233,6 @@ class SocialMediaViewModel @Inject constructor(
     private fun unsubscribe(id: UUID) {
         viewModelScope.launch {
             profileRepository.unsubscribe(id)
-        }
-    }
-
-    fun getFeed() {
-        viewModelScope.launch {
-            val feed = feedRepository.getFeed()
-            if (feed != null) {
-                _feedAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
-            }
         }
     }
 

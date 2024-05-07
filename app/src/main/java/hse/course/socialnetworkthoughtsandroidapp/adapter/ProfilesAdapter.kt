@@ -14,13 +14,13 @@ import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.ProfileFragment
 import java.util.UUID
 
-class SearchProfilesAdapter(
+class ProfilesAdapter(
     private val profiles: List<SearchProfile>,
     private val subscribe: (id: UUID) -> Unit,
     private val unsubscribe: (id: UUID) -> Unit,
 ) :
 
-    RecyclerView.Adapter<SearchProfilesAdapter.ProfilesViewHolder>() {
+    RecyclerView.Adapter<ProfilesAdapter.ProfilesViewHolder>() {
 
     class ProfilesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val view: View

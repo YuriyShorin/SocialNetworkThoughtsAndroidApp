@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 
 import hse.course.socialnetworkthoughtsandroidapp.api.ProfileService
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
+import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
 import java.util.UUID
 
@@ -30,7 +31,7 @@ class ProfileRepository @Inject constructor(
         return profile
     }
 
-    suspend fun getProfile(profileId: UUID) :Profile? {
+    suspend fun getProfile(profileId: UUID): Profile? {
         val jwtToken = getJwtToken()
         var profile: Profile? = null
 
@@ -52,5 +53,53 @@ class ProfileRepository @Inject constructor(
         val jwtToken = getJwtToken()
 
         profileService.unsubscribe("Bearer $jwtToken", profileId)
+    }
+
+    suspend fun getCurrentProfileSubscriptions(): List<SearchProfile>? {
+        val jwtToken = getJwtToken()
+        var profiles: List<SearchProfile>? = null
+
+        val response = profileService.getCurrentProfileSubscriptions("Bearer $jwtToken")
+        if (response.code() == 200) {
+            profiles = response.body()
+        }
+
+        return profiles
+    }
+
+    suspend fun getProfileSubscriptions(profileId: UUID): List<SearchProfile>? {
+        val jwtToken = getJwtToken()
+        var profiles: List<SearchProfile>? = null
+
+        val response = profileService.getProfileSubscriptions("Bearer $jwtToken", profileId)
+        if (response.code() == 200) {
+            profiles = response.body()
+        }
+
+        return profiles
+    }
+
+    suspend fun getCurrentProfileSubscribers(): List<SearchProfile>? {
+        val jwtToken = getJwtToken()
+        var profiles: List<SearchProfile>? = null
+
+        val response = profileService.getCurrentProfileSubscribers("Bearer $jwtToken")
+        if (response.code() == 200) {
+            profiles = response.body()
+        }
+
+        return profiles
+    }
+
+    suspend fun getProfileSubscribers(profileId: UUID): List<SearchProfile>? {
+        val jwtToken = getJwtToken()
+        var profiles: List<SearchProfile>? = null
+
+        val response = profileService.getProfileSubscribers("Bearer $jwtToken", profileId)
+        if (response.code() == 200) {
+            profiles = response.body()
+        }
+
+        return profiles
     }
 }

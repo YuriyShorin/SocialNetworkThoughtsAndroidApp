@@ -40,12 +40,25 @@ class ProfileFragment(
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.postsRecyclerView.layoutManager = linearLayoutManager
 
+        binding.subscriptionsButton.setOnClickListener {
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.fragment_holder, SubscriptionsFragment(profileId))
+                ?.addToBackStack(null)
+                ?.commit()
+        }
+
+        binding.subscribersButton.setOnClickListener {
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(R.id.fragment_holder, SubscribersFragment(profileId))
+                ?.addToBackStack(null)
+                ?.commit()
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 socialMediaViewModel.profile.collect { profile ->
                     binding.profileAppBar.title = profile.nickname
                     binding.statusTextView.text = profile.status
-                    binding.subscribesButton.text =
+                    binding.subscriptionsButton.text =
                         getString(R.string.subscribes, profile.subscribes)
                     binding.subscribersButton.text =
                         getString(R.string.subscribers, profile.subscribers)

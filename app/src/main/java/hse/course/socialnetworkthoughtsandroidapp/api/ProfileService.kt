@@ -1,6 +1,7 @@
 package hse.course.socialnetworkthoughtsandroidapp.api
 
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
+import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -34,6 +35,28 @@ interface ProfileService {
         @Header("Authorization") authorization: String,
         @Path("profileId") profileId: UUID
     ): Response<Void>
+
+    @GET("api/v1/profile/subscriptions")
+    suspend fun getCurrentProfileSubscriptions(
+        @Header("Authorization") authorization: String
+    ): Response<List<SearchProfile>>
+
+    @GET("api/v1/profile/{profileId}/subscriptions")
+    suspend fun getProfileSubscriptions(
+        @Header("Authorization") authorization: String,
+        @Path("profileId") profileId: UUID
+    ): Response<List<SearchProfile>>
+
+    @GET("api/v1/profile/subscribers")
+    suspend fun getCurrentProfileSubscribers(
+        @Header("Authorization") authorization: String
+    ): Response<List<SearchProfile>>
+
+    @GET("api/v1/profile/{profileId}/subscribers")
+    suspend fun getProfileSubscribers(
+        @Header("Authorization") authorization: String,
+        @Path("profileId") profileId: UUID
+    ): Response<List<SearchProfile>>
 
     companion object Factory {
 
