@@ -215,8 +215,7 @@ class SocialMediaViewModel @Inject constructor(
     fun commentPost(createComment: CreateComment) {
         viewModelScope.launch {
             _code.value = postRepository.commentPost(createComment)
-        }
-        viewModelScope.launch {
+        }.invokeOnCompletion {
             getComments(createComment.postId)
         }
     }
