@@ -1,5 +1,6 @@
 package hse.course.socialnetworkthoughtsandroidapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -7,10 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Post
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import java.util.UUID
 
 class CurrentProfilePostsAdapter(
@@ -24,6 +28,7 @@ class CurrentProfilePostsAdapter(
     RecyclerView.Adapter<CurrentProfilePostsAdapter.CurrentProfilePostsViewHolder>() {
 
     class CurrentProfilePostsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val view: View
         val nickname: TextView
         val postedTime: TextView
         val theme: TextView
@@ -33,8 +38,8 @@ class CurrentProfilePostsAdapter(
         val reposts: TextView
         val views: TextView
         val likeButton: ImageButton
+        val commentButton: ImageButton
         val menuButton: ImageButton
-        val view: View
 
         init {
             this.view = view
@@ -47,6 +52,7 @@ class CurrentProfilePostsAdapter(
             reposts = view.findViewById(R.id.repost_textview)
             views = view.findViewById(R.id.views_textview)
             likeButton = view.findViewById(R.id.like_button)
+            commentButton = view.findViewById(R.id.comment_button)
             menuButton = view.findViewById(R.id.menu_button)
         }
     }
@@ -73,7 +79,7 @@ class CurrentProfilePostsAdapter(
         currentProfilePostsViewHolder.reposts.text = posts[position].reposts.toString()
         currentProfilePostsViewHolder.views.text = posts[position].reposts.toString()
 
-        if(posts[position].isLiked) {
+        if (posts[position].isLiked) {
             currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart)
         } else {
             currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
@@ -99,6 +105,14 @@ class CurrentProfilePostsAdapter(
             currentProfilePostsViewHolder.likes.text = posts[position].likes.toString()
         }
 
+        currentProfilePostsViewHolder.commentButton.setOnClickListener {
+            val activity = activityContext(currentProfilePostsViewHolder) as AppCompatActivity
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_holder, CommentsFragment(posts[position].id))
+                .addToBackStack(null)
+                .commit()
+        }
+
         currentProfilePostsViewHolder.menuButton.setOnClickListener {
             val popup = PopupMenu(
                 currentProfilePostsViewHolder.view.context,
@@ -118,6 +132,13 @@ class CurrentProfilePostsAdapter(
 
             popup.show()
         }
+    }
+
+    private fun activityContext(currentProfilePostsViewHolder: CurrentProfilePostsViewHolder): Context? {
+        val context = currentProfilePostsViewHolder.itemView.context
+        return if (context is ViewComponentManager.FragmentContextWrapper) {
+            context.baseContext
+        } else context
     }
 
     override fun getItemCount() = posts.size

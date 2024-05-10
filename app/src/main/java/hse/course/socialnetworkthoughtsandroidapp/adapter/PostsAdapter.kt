@@ -1,14 +1,18 @@
 package hse.course.socialnetworkthoughtsandroidapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Post
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import java.util.UUID
 
 class PostsAdapter(
@@ -30,6 +34,8 @@ class PostsAdapter(
         val reposts: TextView
         val views: TextView
         val likeButton: ImageButton
+        val commentButton: ImageButton
+
 
         init {
             nickname = view.findViewById(R.id.nickname_text_view)
@@ -41,6 +47,7 @@ class PostsAdapter(
             reposts = view.findViewById(R.id.repost_textview)
             views = view.findViewById(R.id.views_textview)
             likeButton = view.findViewById(R.id.like_button)
+            commentButton = view.findViewById(R.id.comment_button)
         }
     }
 
@@ -66,7 +73,7 @@ class PostsAdapter(
         postsViewHolder.reposts.text = posts[position].reposts.toString()
         postsViewHolder.views.text = posts[position].reposts.toString()
 
-        if(posts[position].isLiked) {
+        if (posts[position].isLiked) {
             postsViewHolder.likeButton.setImageResource(R.drawable.heart)
         } else {
             postsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
@@ -92,6 +99,21 @@ class PostsAdapter(
             }
             postsViewHolder.likes.text = posts[position].likes.toString()
         }
+
+        postsViewHolder.commentButton.setOnClickListener {
+            val activity = activityContext(postsViewHolder) as AppCompatActivity
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_holder, CommentsFragment(posts[position].id))
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    private fun activityContext(postsViewHolder: PostsViewHolder): Context? {
+        val context = postsViewHolder.itemView.context
+        return if (context is ViewComponentManager.FragmentContextWrapper) {
+            context.baseContext
+        } else context
     }
 
     override fun getItemCount() = posts.size

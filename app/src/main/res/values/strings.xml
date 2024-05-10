@@ -16,6 +16,8 @@
     <string name="content_input_hint">Пост</string>
     <string name="content_input_helper_text">Введите содержимое поста</string>
 
+    <string name="comment_input_text">Ваш комментарий</string>
+
     <string name="search_input_hint">Поиск…</string>
 
     <string name="login_button_text">Войти</string>
@@ -27,6 +29,9 @@
 
     <string name="subscribes">Подписки %1$d</string>
     <string name="subscribers">Подписчики %1$d</string>
+    <string name="files_attached">Прикреплено файлов: %1$d</string>
+
+    <string name="send">Отправить</string>
 
     <string name="home">Главная</string>
     <string name="content_description_home">Кнопка для перехода на главную страницу</string>
@@ -43,5 +48,7 @@
     <string name="settings_button_description">settings</string>
     <string name="remove">Удалить</string>
     <string name="remove_post">Удалить пост</string>
+    <string name="post_menu_description">Меню для действий с постом</string>
+    <string name="gallery_button_description">Прикрепить фотографии к посту</string>
 
 </resources>

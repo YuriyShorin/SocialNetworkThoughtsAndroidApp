@@ -29,7 +29,7 @@
         style="?attr/textInputOutlinedStyle"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
-
+        android:maxLines="1"
         android:layout_marginTop="20dp"
         app:helperText="@string/theme_input_helper_text"
         app:helperTextEnabled="true"
@@ -40,10 +40,10 @@
         app:layout_constraintVertical_bias="0.0">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/theme_input_hint" />
+            android:hint="@string/theme_input_hint"
+            android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,10 +63,10 @@
         app:layout_constraintVertical_bias="0.0">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:inputType="textMultiLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/content_input_hint" />
+            android:hint="@string/content_input_hint"
+            android:inputType="textMultiLine" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,6 +78,18 @@
         android:layout_marginBottom="12dp"
         android:src="@drawable/baseline_add_photo_alternate_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@android:color/white"
+        app:tint="@color/seed"
+        android:contentDescription="@string/gallery_button_description" />
+
+    <TextView
+        android:id="@+id/files_number_text_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintStart_toEndOf="@+id/gallery_button"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

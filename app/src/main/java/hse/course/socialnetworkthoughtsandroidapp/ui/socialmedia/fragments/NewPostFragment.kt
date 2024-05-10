@@ -1,11 +1,10 @@
 package hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +16,8 @@ import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.databinding.NewPostFragmentLayoutBinding
 import hse.course.socialnetworkthoughtsandroidapp.viewmodel.SocialMediaViewModel
 import kotlinx.coroutines.launch
+
+private const val MAX_IMAGES = 10
 
 @AndroidEntryPoint
 class NewPostFragment : Fragment() {
@@ -37,20 +38,29 @@ class NewPostFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val resultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    socialMediaViewModel.setClipData(result.data)
+        val pickMedia =
+            registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(MAX_IMAGES)) { uris ->
+                val files = buildList {
+                    uris.forEach { uri ->
+                        val file = createTempFile()
+                        requireContext().contentResolver.openInputStream(uri).use { input ->
+                            file.outputStream().use { output ->
+                                input?.copyTo(output)
+                            }
+                        }
+                        add(file)
+                    }
                 }
+                if (files.isNotEmpty()) {
+                    binding.filesNumberTextField.text =
+                        getString(R.string.files_attached, files.size)
+                }
+
+                socialMediaViewModel.setGalleryFiles(files)
             }
 
         binding.galleryButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.type = "image/*"
-            resultLauncher.launch(intent)
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.newPostAppBar.setOnMenuItemClickListener { item ->

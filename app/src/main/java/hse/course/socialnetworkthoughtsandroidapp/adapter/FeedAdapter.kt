@@ -1,13 +1,17 @@
 package hse.course.socialnetworkthoughtsandroidapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Feed
+import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import java.util.UUID
 
 class FeedAdapter(
@@ -27,6 +31,7 @@ class FeedAdapter(
         val reposts: TextView
         val views: TextView
         val likeButton: ImageButton
+        val commentButton: ImageButton
 
         init {
             nickname = view.findViewById(R.id.nickname_text_view)
@@ -38,6 +43,7 @@ class FeedAdapter(
             reposts = view.findViewById(R.id.repost_textview)
             views = view.findViewById(R.id.views_textview)
             likeButton = view.findViewById(R.id.like_button)
+            commentButton = view.findViewById(R.id.comment_button)
         }
     }
 
@@ -62,7 +68,8 @@ class FeedAdapter(
         feedViewHolder.comments.text = feed[position].comments.toString()
         feedViewHolder.reposts.text = feed[position].reposts.toString()
         feedViewHolder.views.text = feed[position].reposts.toString()
-        if(feed[position].isLiked) {
+
+        if (feed[position].isLiked) {
             feedViewHolder.likeButton.setImageResource(R.drawable.heart)
         } else {
             feedViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
@@ -87,6 +94,21 @@ class FeedAdapter(
             }
             feedViewHolder.likes.text = feed[position].likes.toString()
         }
+
+        feedViewHolder.commentButton.setOnClickListener {
+            val activity = activityContext(feedViewHolder) as AppCompatActivity
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_holder, CommentsFragment(feed[position].postId))
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    private fun activityContext(feedViewHolder: FeedViewHolder): Context? {
+        val context = feedViewHolder.itemView.context
+        return if (context is ViewComponentManager.FragmentContextWrapper) {
+            context.baseContext
+        } else context
     }
 
     override fun getItemCount() = feed.size

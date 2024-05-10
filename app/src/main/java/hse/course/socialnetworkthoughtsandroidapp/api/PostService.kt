@@ -1,11 +1,15 @@
 package hse.course.socialnetworkthoughtsandroidapp.api
 
+import hse.course.socialnetworkthoughtsandroidapp.model.Comment
+import hse.course.socialnetworkthoughtsandroidapp.model.CreateComment
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -24,11 +28,23 @@ interface PostService {
         @Part files: List<MultipartBody.Part>?
     ): Response<Void>
 
+    @DELETE("api/v1/post/{postId}")
+    suspend fun deletePost(
+        @Header("Authorization") authorization: String,
+        @Path("postId") postId: UUID
+    ): Response<Void>
+
     @POST("api/v1/post/like/{postId}")
     suspend fun likePost(
         @Header("Authorization") authorization: String,
         @Path("postId") postId: UUID
     ): Response<Void>
+
+    @GET("api/v1/post/{postId}/comments")
+    suspend fun getComments(
+        @Header("Authorization") authorization: String,
+        @Path("postId") postId: UUID
+    ): Response<List<Comment>>
 
     @DELETE("api/v1/post/unlike/{postId}")
     suspend fun unlikePost(
@@ -36,10 +52,16 @@ interface PostService {
         @Path("postId") postId: UUID
     ): Response<Void>
 
-    @DELETE("api/v1/post/{postId}")
-    suspend fun deletePost(
+    @POST("api/v1/post/comment")
+    suspend fun commentPost(
         @Header("Authorization") authorization: String,
-        @Path("postId") postId: UUID
+        @Body createComment: CreateComment
+    ): Response<Void>
+
+    @DELETE("api/v1/post/comment/{commentId}")
+    suspend fun deleteComment(
+        @Header("Authorization") authorization: String,
+        @Path("commentId") commentId: UUID
     ): Response<Void>
 
     companion object Factory {

@@ -1,15 +1,14 @@
 package hse.course.socialnetworkthoughtsandroidapp.viewmodel
 
-import android.content.ClipData
-import android.content.Intent
-import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hse.course.socialnetworkthoughtsandroidapp.adapter.CommentsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.CurrentProfilePostsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.FeedAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.PostsAdapter
 import hse.course.socialnetworkthoughtsandroidapp.adapter.ProfilesAdapter
+import hse.course.socialnetworkthoughtsandroidapp.model.CreateComment
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.repository.FeedRepository
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 
@@ -57,7 +56,10 @@ class SocialMediaViewModel @Inject constructor(
     private val _feedAdapter = MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost))
     val feedAdapter: StateFlow<FeedAdapter> = _feedAdapter.asStateFlow()
 
-    private var clipData: ClipData? = null
+    private val _commentsAdapter = MutableStateFlow(CommentsAdapter(ArrayList()))
+    val commentsAdapter: StateFlow<CommentsAdapter> = _commentsAdapter.asStateFlow()
+
+    private var galleryFiles: List<File>? = null
 
     private val _currentProfilePostsAdapter =
         MutableStateFlow(
@@ -131,7 +133,7 @@ class SocialMediaViewModel @Inject constructor(
         val contentBody = RequestBody.create(MediaType.parse("text/plain"), content)
         val files: List<MultipartBody.Part>? = getFilesFromData()
         viewModelScope.launch {
-            postRepository.createPost(themeBody, contentBody, files)
+            _code.value = postRepository.createPost(themeBody, contentBody, files)
         }
     }
 
@@ -201,27 +203,37 @@ class SocialMediaViewModel @Inject constructor(
         }
     }
 
-    fun setClipData(data: Intent?) {
-        this.clipData = data?.clipData
+    fun getComments(postId: UUID) {
+        viewModelScope.launch {
+            val comments = postRepository.getComments(postId)
+            if (comments != null) {
+                _commentsAdapter.value = CommentsAdapter(comments)
+            }
+        }
+    }
+
+    fun commentPost(createComment: CreateComment) {
+        viewModelScope.launch {
+            _code.value = postRepository.commentPost(createComment)
+        }
+        viewModelScope.launch {
+            getComments(createComment.postId)
+        }
+    }
+
+    fun setGalleryFiles(files: List<File>) {
+        this.galleryFiles = files
     }
 
     private fun getFilesFromData(): List<MultipartBody.Part>? {
-        if (clipData == null || clipData?.itemCount == 0) {
-            return null
-        }
-
-        val files = emptyList<MultipartBody.Part>().toMutableList()
-        for (i: Int in 0..<clipData?.itemCount!!) {
-            val uri = clipData?.getItemAt(i)?.uri
-            val file = uri?.toFile()
-
-            if (file != null) {
-                val fileBody = RequestBody.create(MediaType.parse("image/*"), file)
-                files.add(MultipartBody.Part.createFormData("files", file.name, fileBody))
+        return galleryFiles?.let { galleryFiles ->
+            buildList {
+                galleryFiles.forEach { galleryFile ->
+                    val fileBody = RequestBody.create(MediaType.parse("image/*"), galleryFile)
+                    add(MultipartBody.Part.createFormData("files", galleryFile.name, fileBody))
+                }
             }
         }
-
-        return files
     }
 
     private fun subscribe(id: UUID) {
