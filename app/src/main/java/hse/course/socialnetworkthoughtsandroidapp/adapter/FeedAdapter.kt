@@ -8,10 +8,12 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Feed
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
+import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
 import java.util.UUID
 
 class FeedAdapter(
@@ -22,29 +24,17 @@ class FeedAdapter(
     RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
 
     class FeedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nickname: TextView
-        val postedTime: TextView
-        val theme: TextView
-        val content: TextView
-        val likes: TextView
-        val comments: TextView
-        val reposts: TextView
-        val views: TextView
-        val likeButton: ImageButton
-        val commentButton: ImageButton
-
-        init {
-            nickname = view.findViewById(R.id.nickname_text_view)
-            postedTime = view.findViewById(R.id.posted_time_textview)
-            theme = view.findViewById(R.id.theme)
-            content = view.findViewById(R.id.content)
-            likes = view.findViewById(R.id.like_textview)
-            comments = view.findViewById(R.id.comment_textview)
-            reposts = view.findViewById(R.id.repost_textview)
-            views = view.findViewById(R.id.views_textview)
-            likeButton = view.findViewById(R.id.like_button)
-            commentButton = view.findViewById(R.id.comment_button)
-        }
+        val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val postedTime: TextView = view.findViewById(R.id.posted_time_textview)
+        val theme: TextView = view.findViewById(R.id.theme)
+        val content: TextView = view.findViewById(R.id.content)
+        val imagesPager: ViewPager2 = view.findViewById(R.id.images_pager)
+        val likes: TextView = view.findViewById(R.id.like_textview)
+        val comments: TextView = view.findViewById(R.id.comment_textview)
+        val reposts: TextView = view.findViewById(R.id.repost_textview)
+        val views: TextView = view.findViewById(R.id.views_textview)
+        val likeButton: ImageButton = view.findViewById(R.id.like_button)
+        val commentButton: ImageButton = view.findViewById(R.id.comment_button)
     }
 
     override fun onCreateViewHolder(
@@ -68,6 +58,18 @@ class FeedAdapter(
         feedViewHolder.comments.text = feed[position].comments.toString()
         feedViewHolder.reposts.text = feed[position].reposts.toString()
         feedViewHolder.views.text = feed[position].reposts.toString()
+
+        feedViewHolder.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        feedViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
+
+        if (feed[position].images != null) {
+            val images = feed[position].images?.let { ImagesUtils.base64ToBitmap(it) }
+            if (!images.isNullOrEmpty()) {
+                feedViewHolder.imagesPager.adapter = ImagesPagerAdapter(images)
+                feedViewHolder.imagesPager.layoutParams.height = 720
+            }
+
+        }
 
         if (feed[position].isLiked) {
             feedViewHolder.likeButton.setImageResource(R.drawable.heart)

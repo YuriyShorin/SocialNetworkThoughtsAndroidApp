@@ -50,5 +50,6 @@
     <string name="remove_post">Удалить пост</string>
     <string name="post_menu_description">Меню для действий с постом</string>
     <string name="gallery_button_description">Прикрепить фотографии к посту</string>
+    <string name="image">image</string>
 
 </resources>

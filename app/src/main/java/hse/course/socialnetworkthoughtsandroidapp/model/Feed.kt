@@ -15,5 +15,6 @@ data class Feed(
     val reposts: Long,
     val views: Long,
     val createdAt: Timestamp,
-    val editedAt: Timestamp
+    val editedAt: Timestamp,
+    val images: List<String>?
 )

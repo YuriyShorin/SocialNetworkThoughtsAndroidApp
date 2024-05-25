@@ -59,7 +59,7 @@ class SocialMediaViewModel @Inject constructor(
     private val _commentsAdapter = MutableStateFlow(CommentsAdapter(ArrayList()))
     val commentsAdapter: StateFlow<CommentsAdapter> = _commentsAdapter.asStateFlow()
 
-    private var galleryFiles: List<File>? = null
+    private var images: List<File>? = null
 
     private val _currentProfilePostsAdapter =
         MutableStateFlow(
@@ -131,9 +131,9 @@ class SocialMediaViewModel @Inject constructor(
     fun createPost(theme: String, content: String) {
         val themeBody = RequestBody.create(MediaType.parse("text/plain"), theme)
         val contentBody = RequestBody.create(MediaType.parse("text/plain"), content)
-        val files: List<MultipartBody.Part>? = getFilesFromData()
+        val images: List<MultipartBody.Part>? = getImagesFromData()
         viewModelScope.launch {
-            _code.value = postRepository.createPost(themeBody, contentBody, files)
+            _code.value = postRepository.createPost(themeBody, contentBody, images)
         }
     }
 
@@ -220,16 +220,16 @@ class SocialMediaViewModel @Inject constructor(
         }
     }
 
-    fun setGalleryFiles(files: List<File>) {
-        this.galleryFiles = files
+    fun setImages(images: List<File>) {
+        this.images = images
     }
 
-    private fun getFilesFromData(): List<MultipartBody.Part>? {
-        return galleryFiles?.let { galleryFiles ->
+    private fun getImagesFromData(): List<MultipartBody.Part>? {
+        return images?.let { images ->
             buildList {
-                galleryFiles.forEach { galleryFile ->
-                    val fileBody = RequestBody.create(MediaType.parse("image/*"), galleryFile)
-                    add(MultipartBody.Part.createFormData("files", galleryFile.name, fileBody))
+                images.forEach { image ->
+                    val imageBody = RequestBody.create(MediaType.parse("image/*"), image)
+                    add(MultipartBody.Part.createFormData("images", image.name, imageBody))
                 }
             }
         }

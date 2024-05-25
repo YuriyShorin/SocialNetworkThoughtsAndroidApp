@@ -40,7 +40,7 @@ class NewPostFragment : Fragment() {
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(MAX_IMAGES)) { uris ->
-                val files = buildList {
+                val images = buildList {
                     uris.forEach { uri ->
                         val file = createTempFile()
                         requireContext().contentResolver.openInputStream(uri).use { input ->
@@ -51,12 +51,12 @@ class NewPostFragment : Fragment() {
                         add(file)
                     }
                 }
-                if (files.isNotEmpty()) {
+                if (images.isNotEmpty()) {
                     binding.filesNumberTextField.text =
-                        getString(R.string.files_attached, files.size)
+                        getString(R.string.files_attached, images.size)
                 }
 
-                socialMediaViewModel.setGalleryFiles(files)
+                socialMediaViewModel.setImages(images)
             }
 
         binding.galleryButton.setOnClickListener {

@@ -8,12 +8,15 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Post
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
+import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
 import java.util.UUID
+import kotlin.collections.ArrayList
 
 class PostsAdapter(
     private val posts: MutableList<Post>,
@@ -25,30 +28,17 @@ class PostsAdapter(
     RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
 
     class PostsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nickname: TextView
-        val postedTime: TextView
-        val theme: TextView
-        val content: TextView
-        val likes: TextView
-        val comments: TextView
-        val reposts: TextView
-        val views: TextView
-        val likeButton: ImageButton
-        val commentButton: ImageButton
-
-
-        init {
-            nickname = view.findViewById(R.id.nickname_text_view)
-            postedTime = view.findViewById(R.id.posted_time_textview)
-            theme = view.findViewById(R.id.theme)
-            content = view.findViewById(R.id.content)
-            likes = view.findViewById(R.id.like_textview)
-            comments = view.findViewById(R.id.comment_textview)
-            reposts = view.findViewById(R.id.repost_textview)
-            views = view.findViewById(R.id.views_textview)
-            likeButton = view.findViewById(R.id.like_button)
-            commentButton = view.findViewById(R.id.comment_button)
-        }
+        val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val postedTime: TextView = view.findViewById(R.id.posted_time_textview)
+        val theme: TextView = view.findViewById(R.id.theme)
+        val content: TextView = view.findViewById(R.id.content)
+        val imagesPager: ViewPager2 = view.findViewById(R.id.images_pager)
+        val likes: TextView = view.findViewById(R.id.like_textview)
+        val comments: TextView = view.findViewById(R.id.comment_textview)
+        val reposts: TextView = view.findViewById(R.id.repost_textview)
+        val views: TextView = view.findViewById(R.id.views_textview)
+        val likeButton: ImageButton = view.findViewById(R.id.like_button)
+        val commentButton: ImageButton = view.findViewById(R.id.comment_button)
     }
 
     override fun onCreateViewHolder(
@@ -68,6 +58,19 @@ class PostsAdapter(
         postsViewHolder.nickname.text = profile.nickname
         postsViewHolder.theme.text = posts[position].theme
         postsViewHolder.content.text = posts[position].content
+
+        postsViewHolder.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        postsViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
+
+        if (posts[position].images != null) {
+            val images = posts[position].images?.let { ImagesUtils.base64ToBitmap(it) }
+            if (!images.isNullOrEmpty()) {
+                postsViewHolder.imagesPager.adapter = ImagesPagerAdapter(images)
+                postsViewHolder.imagesPager.layoutParams.height = 720
+            }
+
+        }
+
         postsViewHolder.likes.text = posts[position].likes.toString()
         postsViewHolder.comments.text = posts[position].comments.toString()
         postsViewHolder.reposts.text = posts[position].reposts.toString()

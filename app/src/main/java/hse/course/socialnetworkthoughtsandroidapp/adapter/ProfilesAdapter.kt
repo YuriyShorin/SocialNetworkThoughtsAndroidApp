@@ -22,16 +22,9 @@ class ProfilesAdapter(
 
     RecyclerView.Adapter<ProfilesAdapter.ProfilesViewHolder>() {
 
-    class ProfilesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val view: View
-        val subscribeImageButton: ImageButton
-        val nickname: TextView
-
-        init {
-            this.view = view
-            nickname = view.findViewById(R.id.nickname_text_view)
-            subscribeImageButton = view.findViewById(R.id.subscribe_image_button)
-        }
+    class ProfilesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val subscribeImageButton: ImageButton = view.findViewById(R.id.subscribe_image_button)
+        val nickname: TextView = view.findViewById(R.id.nickname_text_view)
     }
 
     override fun onCreateViewHolder(

@@ -22,10 +22,10 @@ class PostRepository @Inject constructor(
     suspend fun createPost(
         theme: RequestBody,
         content: RequestBody,
-        files: List<MultipartBody.Part>?
+        images: List<MultipartBody.Part>?
     ): Int {
         val jwtToken = getJwtToken() ?: return 403
-        val response = postService.createPost("Bearer $jwtToken", theme, content, files)
+        val response = postService.createPost("Bearer $jwtToken", theme, content, images)
         return response.code()
     }
 

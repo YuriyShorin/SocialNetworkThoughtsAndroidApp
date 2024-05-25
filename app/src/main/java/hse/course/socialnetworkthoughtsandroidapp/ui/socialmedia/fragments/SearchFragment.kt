@@ -25,9 +25,9 @@ class SearchFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val demoCollectionAdapter = SearchPagerAdapter(this)
+        val searchPagerAdapter = SearchPagerAdapter(this)
         val searchPager = binding.searchPager
-        searchPager.adapter = demoCollectionAdapter
+        searchPager.adapter = searchPagerAdapter
 
         val searchTabLayout = binding.searchTabLayout
         searchTabLayout.addTab(searchTabLayout.newTab().setText("Профиль"), 0)

@@ -15,13 +15,8 @@ class CommentsAdapter (
     RecyclerView.Adapter<CommentsAdapter.CommentsViewHolder>() {
 
     class CommentsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nickname: TextView
-        val content: TextView
-
-        init {
-            nickname = view.findViewById(R.id.nickname_text_view)
-            content = view.findViewById(R.id.content_text_view)
-        }
+        val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val content: TextView = view.findViewById(R.id.content_text_view)
     }
 
     override fun onCreateViewHolder(

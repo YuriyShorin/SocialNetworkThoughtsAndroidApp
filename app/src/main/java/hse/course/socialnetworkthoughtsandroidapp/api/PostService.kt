@@ -25,7 +25,7 @@ interface PostService {
         @Header("Authorization") authorization: String,
         @Part("theme") theme: RequestBody,
         @Part("content") content: RequestBody,
-        @Part files: List<MultipartBody.Part>?
+        @Part images: List<MultipartBody.Part>?
     ): Response<Void>
 
     @DELETE("api/v1/post/{postId}")
