@@ -6,6 +6,8 @@ import hse.course.socialnetworkthoughtsandroidapp.api.ProfileService
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.utils.SharedPreferencesKeys
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.util.UUID
 
 import javax.inject.Inject
@@ -101,5 +103,14 @@ class ProfileRepository @Inject constructor(
         }
 
         return profiles
+    }
+
+    suspend fun updateProfile(
+        nickname: RequestBody,
+        status: RequestBody,
+        image: MultipartBody.Part?
+    ) {
+        val jwtToken = getJwtToken()
+        profileService.updateProfile("Bearer $jwtToken", nickname, status, image)
     }
 }

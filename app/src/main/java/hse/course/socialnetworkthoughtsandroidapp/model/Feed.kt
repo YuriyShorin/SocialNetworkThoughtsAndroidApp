@@ -7,6 +7,7 @@ data class Feed(
     val postId: UUID,
     val profileId: UUID,
     val profileNickname: String,
+    val profileImage: String? = null,
     val theme: String,
     val content: String,
     var likes: Long,

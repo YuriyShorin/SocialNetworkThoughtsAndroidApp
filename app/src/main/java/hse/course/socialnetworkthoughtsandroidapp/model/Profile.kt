@@ -8,5 +8,6 @@ data class Profile(
     val status: String? = null,
     val subscribes: Int? = null,
     val subscribers: Int? = null,
+    val profileImage: String? = null,
     val posts: MutableList<Post>? = null
 )

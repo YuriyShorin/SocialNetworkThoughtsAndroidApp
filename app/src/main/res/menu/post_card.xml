@@ -4,6 +4,6 @@
     <item
         android:id="@+id/remove"
         android:title="@string/remove"
-        android:contentDescription="@string/remove_post" />
+        android:contentDescription="@string/content_description_remove" />
 
 </menu>

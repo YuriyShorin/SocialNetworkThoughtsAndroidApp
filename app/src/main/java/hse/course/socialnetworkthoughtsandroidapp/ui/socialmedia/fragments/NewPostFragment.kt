@@ -56,7 +56,7 @@ class NewPostFragment : Fragment() {
                         getString(R.string.files_attached, images.size)
                 }
 
-                socialMediaViewModel.setImages(images)
+                socialMediaViewModel.setPostImages(images)
             }
 
         binding.galleryButton.setOnClickListener {

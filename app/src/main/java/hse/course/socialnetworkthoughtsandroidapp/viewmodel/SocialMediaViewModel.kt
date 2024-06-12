@@ -11,6 +11,7 @@ import hse.course.socialnetworkthoughtsandroidapp.adapter.ProfilesAdapter
 import hse.course.socialnetworkthoughtsandroidapp.model.CreateComment
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
+import hse.course.socialnetworkthoughtsandroidapp.repository.AuthenticationRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.FeedRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.PostRepository
 import hse.course.socialnetworkthoughtsandroidapp.repository.ProfileRepository
@@ -32,7 +33,8 @@ class SocialMediaViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val postRepository: PostRepository,
     private val searchRepository: SearchRepository,
-    private val feedRepository: FeedRepository
+    private val feedRepository: FeedRepository,
+    private val authenticationRepository: AuthenticationRepository
 ) :
     ViewModel() {
 
@@ -59,7 +61,8 @@ class SocialMediaViewModel @Inject constructor(
     private val _commentsAdapter = MutableStateFlow(CommentsAdapter(ArrayList()))
     val commentsAdapter: StateFlow<CommentsAdapter> = _commentsAdapter.asStateFlow()
 
-    private var images: List<File>? = null
+    private var postImages: List<File>? = null
+    private var profileImage: File? = null
 
     private val _currentProfilePostsAdapter =
         MutableStateFlow(
@@ -220,18 +223,49 @@ class SocialMediaViewModel @Inject constructor(
         }
     }
 
-    fun setImages(images: List<File>) {
-        this.images = images
+    fun updateProfile(nickname: String, status: String) {
+        val nicknameBody = RequestBody.create(MediaType.parse("text/plain"), nickname)
+        val statusBody = RequestBody.create(MediaType.parse("text/plain"), status)
+        val image: MultipartBody.Part? = getImageFromData()
+        viewModelScope.launch {
+            profileRepository.updateProfile(nicknameBody, statusBody, image)
+        }
+    }
+
+    fun logout() {
+        authenticationRepository.logout()
+    }
+
+    fun setPostImages(images: List<File>) {
+        this.postImages = images
+    }
+
+    fun setProfileImage(image: File?) {
+        this.profileImage = image
     }
 
     private fun getImagesFromData(): List<MultipartBody.Part>? {
-        return images?.let { images ->
+        return postImages?.let { images ->
             buildList {
                 images.forEach { image ->
                     val imageBody = RequestBody.create(MediaType.parse("image/*"), image)
                     add(MultipartBody.Part.createFormData("images", image.name, imageBody))
                 }
             }
+        }
+    }
+
+    private fun getImageFromData(): MultipartBody.Part? {
+        if (profileImage == null) {
+            return null
+        }
+
+        val imageBody = profileImage?.let { RequestBody.create(MediaType.parse("image/*"), it) }
+        return imageBody?.let {
+            MultipartBody.Part.createFormData(
+                "profilePicture", profileImage!!.name,
+                it
+            )
         }
     }
 

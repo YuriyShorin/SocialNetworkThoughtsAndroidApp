@@ -51,4 +51,8 @@ class AuthenticationRepository @Inject constructor(
 
         return response.code() == 200
     }
+
+    fun logout() {
+        sharedPreferences.edit().remove(SharedPreferencesKeys.JWT_TOKEN.name).apply()
+    }
 }

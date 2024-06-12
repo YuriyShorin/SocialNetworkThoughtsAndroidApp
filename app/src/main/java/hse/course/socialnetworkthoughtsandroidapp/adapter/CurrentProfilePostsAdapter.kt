@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +33,7 @@ class CurrentProfilePostsAdapter(
 
     class CurrentProfilePostsViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val image: ImageView = view.findViewById(R.id.profile_picture_imageview)
         val postedTime: TextView = view.findViewById(R.id.posted_time_textview)
         val theme: TextView = view.findViewById(R.id.theme)
         val content: TextView = view.findViewById(R.id.content)
@@ -70,8 +72,15 @@ class CurrentProfilePostsAdapter(
         currentProfilePostsViewHolder.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         currentProfilePostsViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
 
+        if (profile.profileImage != null) {
+            val bitmap = ImagesUtils.base64ToBitmap(profile.profileImage)
+            if (bitmap != null) {
+                currentProfilePostsViewHolder.image.setImageBitmap(bitmap)
+            }
+        }
+
         if (posts[position].images != null) {
-            val images = posts[position].images?.let { ImagesUtils.base64ToBitmap(it) }
+            val images = posts[position].images?.let { ImagesUtils.base64ListToBitmapList(it) }
             if (!images.isNullOrEmpty()) {
                 currentProfilePostsViewHolder.imagesPager.adapter = ImagesPagerAdapter(images)
                 currentProfilePostsViewHolder.imagesPager.layoutParams.height = 720

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -20,12 +21,14 @@ import java.util.UUID
 class FeedAdapter(
     private val feed: List<Feed>,
     private val likePost: (id: UUID) -> Unit,
-    private val unlikePost: (id: UUID) -> Unit) :
+    private val unlikePost: (id: UUID) -> Unit
+) :
 
     RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
 
     class FeedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val image: ImageView = view.findViewById(R.id.profile_picture_imageview)
         val postedTime: TextView = view.findViewById(R.id.posted_time_textview)
         val theme: TextView = view.findViewById(R.id.theme)
         val content: TextView = view.findViewById(R.id.content)
@@ -63,8 +66,15 @@ class FeedAdapter(
         feedViewHolder.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         feedViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
 
+        if (feed[position].profileImage != null) {
+            val bitmap = feed[position].profileImage?.let { ImagesUtils.base64ToBitmap(it) }
+            if (bitmap != null) {
+                feedViewHolder.image.setImageBitmap(bitmap)
+            }
+        }
+
         if (feed[position].images != null) {
-            val images = feed[position].images?.let { ImagesUtils.base64ToBitmap(it) }
+            val images = feed[position].images?.let { ImagesUtils.base64ListToBitmapList(it) }
             if (!images.isNullOrEmpty()) {
                 feedViewHolder.imagesPager.adapter = ImagesPagerAdapter(images)
                 feedViewHolder.imagesPager.layoutParams.height = 720

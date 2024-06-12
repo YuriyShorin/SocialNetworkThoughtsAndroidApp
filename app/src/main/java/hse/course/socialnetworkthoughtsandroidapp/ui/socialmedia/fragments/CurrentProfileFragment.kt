@@ -1,6 +1,7 @@
 package hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.databinding.CurrentProfileFragmentLayoutBinding
+import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
 import hse.course.socialnetworkthoughtsandroidapp.viewmodel.SocialMediaViewModel
 
 import kotlinx.coroutines.launch
@@ -23,6 +25,10 @@ class CurrentProfileFragment : Fragment() {
     private lateinit var binding: CurrentProfileFragmentLayoutBinding
 
     private val socialMediaViewModel: SocialMediaViewModel by viewModels()
+
+    private var profileNickname: String? = null
+
+    private var profileStatus: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +60,21 @@ class CurrentProfileFragment : Fragment() {
                 ?.commit()
         }
 
+        binding.profileAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.settings -> {
+                    activity?.supportFragmentManager?.beginTransaction()
+                        ?.replace(R.id.fragment_holder, ProfileSettingsFragment(profileNickname, profileStatus))
+                        ?.addToBackStack(null)
+                        ?.commit()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 socialMediaViewModel.currentProfile.collect { profile ->
@@ -63,6 +84,16 @@ class CurrentProfileFragment : Fragment() {
                         getString(R.string.subscribes, profile.subscribes)
                     binding.subscribersButton.text =
                         getString(R.string.subscribers, profile.subscribers)
+                    profile.profileImage?.let { Log.d("info", it) }
+                    if (profile.profileImage != null) {
+                        val profileImage = ImagesUtils.base64ToBitmap(profile.profileImage)
+                        if (profileImage != null) {
+                            binding.profilePicture.setImageBitmap(profileImage)
+                        }
+                    }
+                    profileNickname = profile.nickname
+                    profileStatus = profile.status
+
                 }
             }
         }

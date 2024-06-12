@@ -5,5 +5,6 @@ import java.util.UUID
 data class SearchProfile(
     val id: UUID? = null,
     val nickname: String? = null,
-    var isSubscribed: Boolean? = null
+    var isSubscribed: Boolean? = null,
+    var profileImage: String? = null
 )

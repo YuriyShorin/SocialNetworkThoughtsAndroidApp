@@ -29,27 +29,38 @@
 
     <string name="subscribes">Подписки %1$d</string>
     <string name="subscribers">Подписчики %1$d</string>
+
     <string name="files_attached">Прикреплено файлов: %1$d</string>
 
     <string name="send">Отправить</string>
 
     <string name="home">Главная</string>
     <string name="content_description_home">Кнопка для перехода на главную страницу</string>
+
     <string name="search">Поиск</string>
     <string name="content_description_search">Кнопка для перехода к поиску</string>
+
     <string name="post">Новый пост</string>
     <string name="content_description_post">Кнопка для перехода к созданию нового поста</string>
+
     <string name="notifications">Уведомления</string>
     <string name="content_description_notifications">Кнопка для перехода к уведомлениям</string>
+
     <string name="profile">Профиль</string>
     <string name="content_description_profile">Кнопка для перехода к профилю</string>
+
     <string name="check">Сохранить</string>
     <string name="content_description_check">Сохранить пост</string>
-    <string name="settings_button_description">settings</string>
+
+    <string name="settings">Настройки</string>
+    <string name="content_description_settings">Настройки профиля</string>
+
     <string name="remove">Удалить</string>
-    <string name="remove_post">Удалить пост</string>
+    <string name="content_description_remove">Удалить пост</string>
+
     <string name="post_menu_description">Меню для действий с постом</string>
     <string name="gallery_button_description">Прикрепить фотографии к посту</string>
+
     <string name="image">image</string>
 
 </resources>

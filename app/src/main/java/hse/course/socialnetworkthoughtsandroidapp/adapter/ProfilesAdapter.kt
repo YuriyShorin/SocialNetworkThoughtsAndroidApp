@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import dagger.hilt.android.internal.managers.ViewComponentManager
 import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.SearchProfile
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.ProfileFragment
+import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
 import java.util.UUID
 
 class ProfilesAdapter(
@@ -25,6 +27,7 @@ class ProfilesAdapter(
     class ProfilesViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val subscribeImageButton: ImageButton = view.findViewById(R.id.subscribe_image_button)
         val nickname: TextView = view.findViewById(R.id.nickname_text_view)
+        val image: ImageView = view.findViewById(R.id.profile_picture_imageview)
     }
 
     override fun onCreateViewHolder(
@@ -51,6 +54,13 @@ class ProfilesAdapter(
             profilesViewHolder.subscribeImageButton.setImageResource(R.drawable.account_minus)
         } else {
             profilesViewHolder.subscribeImageButton.setImageResource(R.drawable.account_plus)
+        }
+
+        if (profiles[position].profileImage != null) {
+            val bitmap = profiles[position].profileImage?.let { ImagesUtils.base64ToBitmap(it) }
+            if (bitmap != null) {
+                profilesViewHolder.image.setImageBitmap(bitmap)
+            }
         }
 
         profilesViewHolder.subscribeImageButton.setOnClickListener {

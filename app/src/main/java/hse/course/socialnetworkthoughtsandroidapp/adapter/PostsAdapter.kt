@@ -64,7 +64,7 @@ class PostsAdapter(
         postsViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
 
         if (posts[position].images != null) {
-            val images = posts[position].images?.let { ImagesUtils.base64ToBitmap(it) }
+            val images = posts[position].images?.let { ImagesUtils.base64ListToBitmapList(it) }
             if (!images.isNullOrEmpty()) {
                 postsViewHolder.imagesPager.adapter = ImagesPagerAdapter(images)
                 postsViewHolder.imagesPager.layoutParams.height = 720
