@@ -17,6 +17,7 @@ import hse.course.socialnetworkthoughtsandroidapp.model.Post
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
+import hse.course.socialnetworkthoughtsandroidapp.utils.TimeUtils
 import java.util.UUID
 
 class CurrentProfilePostsAdapter(
@@ -84,9 +85,9 @@ class CurrentProfilePostsAdapter(
             currentProfilePostsViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
         }
         if (posts[position].createdAt.equals(posts[position].editedAt)) {
-            currentProfilePostsViewHolder.postedTime.text = posts[position].createdAt.toString()
+            currentProfilePostsViewHolder.postedTime.text = TimeUtils.formatTime(posts[position].createdAt)
         } else {
-            currentProfilePostsViewHolder.postedTime.text = posts[position].editedAt.toString()
+            currentProfilePostsViewHolder.postedTime.text = TimeUtils.formatTime(posts[position].editedAt)
         }
 
         currentProfilePostsViewHolder.likeButton.setOnClickListener {

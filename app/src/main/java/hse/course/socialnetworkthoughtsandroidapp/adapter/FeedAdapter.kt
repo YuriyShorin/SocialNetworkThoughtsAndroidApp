@@ -14,6 +14,7 @@ import hse.course.socialnetworkthoughtsandroidapp.R
 import hse.course.socialnetworkthoughtsandroidapp.model.Feed
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
+import hse.course.socialnetworkthoughtsandroidapp.utils.TimeUtils
 import java.util.UUID
 
 class FeedAdapter(
@@ -77,9 +78,9 @@ class FeedAdapter(
             feedViewHolder.likeButton.setImageResource(R.drawable.heart_outline)
         }
         if (feed[position].createdAt.equals(feed[position].editedAt)) {
-            feedViewHolder.postedTime.text = feed[position].createdAt.toString()
+            feedViewHolder.postedTime.text = TimeUtils.formatTime(feed[position].createdAt)
         } else {
-            feedViewHolder.postedTime.text = feed[position].editedAt.toString()
+            feedViewHolder.postedTime.text = TimeUtils.formatTime(feed[position].editedAt)
         }
 
         feedViewHolder.likeButton.setOnClickListener {

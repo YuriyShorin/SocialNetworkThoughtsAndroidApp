@@ -15,6 +15,7 @@ import hse.course.socialnetworkthoughtsandroidapp.model.Post
 import hse.course.socialnetworkthoughtsandroidapp.model.Profile
 import hse.course.socialnetworkthoughtsandroidapp.ui.socialmedia.fragments.CommentsFragment
 import hse.course.socialnetworkthoughtsandroidapp.utils.ImagesUtils
+import hse.course.socialnetworkthoughtsandroidapp.utils.TimeUtils
 import java.util.UUID
 import kotlin.collections.ArrayList
 
@@ -83,9 +84,9 @@ class PostsAdapter(
         }
 
         if (posts[position].createdAt.equals(posts[position].editedAt)) {
-            postsViewHolder.postedTime.text = posts[position].createdAt.toString()
+            postsViewHolder.postedTime.text = TimeUtils.formatTime(posts[position].createdAt)
         } else {
-            postsViewHolder.postedTime.text = posts[position].editedAt.toString()
+            postsViewHolder.postedTime.text = TimeUtils.formatTime(posts[position].editedAt)
         }
 
         postsViewHolder.likeButton.setOnClickListener {
