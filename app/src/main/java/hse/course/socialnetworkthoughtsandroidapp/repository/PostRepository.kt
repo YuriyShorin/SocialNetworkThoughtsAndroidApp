@@ -70,4 +70,10 @@ class PostRepository @Inject constructor(
         val response = postService.deleteComment("Bearer $jwtToken", commentId)
         return response.code()
     }
+
+    suspend fun viewPost(postId: UUID): Int {
+        val jwtToken = getJwtToken() ?: return 403
+        val response = postService.viewPost("Bearer $jwtToken", postId)
+        return response.code()
+    }
 }

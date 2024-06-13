@@ -44,7 +44,7 @@ class SocialMediaViewModel @Inject constructor(
         this._searchProfilesAdapter.asStateFlow()
 
     private val _searchPostsAdapter =
-        MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost))
+        MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost, ::viewPost))
     val searchPostsAdapter: StateFlow<FeedAdapter> = _searchPostsAdapter.asStateFlow()
 
     private val _subscriptionsAdapter =
@@ -55,7 +55,8 @@ class SocialMediaViewModel @Inject constructor(
         MutableStateFlow(ProfilesAdapter(ArrayList(), ::subscribe, ::unsubscribe))
     val subscribersAdapter: StateFlow<ProfilesAdapter> = _subscribersAdapter.asStateFlow()
 
-    private val _feedAdapter = MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost))
+    private val _feedAdapter =
+        MutableStateFlow(FeedAdapter(ArrayList(), ::likePost, ::unlikePost, ::viewPost))
     val feedAdapter: StateFlow<FeedAdapter> = _feedAdapter.asStateFlow()
 
     private val _commentsAdapter = MutableStateFlow(CommentsAdapter(ArrayList()))
@@ -162,7 +163,8 @@ class SocialMediaViewModel @Inject constructor(
         viewModelScope.launch {
             val feed = searchRepository.searchPosts(theme)
             if (feed != null) {
-                _searchPostsAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
+                _searchPostsAdapter.value =
+                    FeedAdapter(feed, ::likePost, ::unlikePost, ::viewPost)
             }
         }
     }
@@ -201,7 +203,8 @@ class SocialMediaViewModel @Inject constructor(
         viewModelScope.launch {
             val feed = feedRepository.getFeed()
             if (feed != null) {
-                _feedAdapter.value = FeedAdapter(feed, ::likePost, ::unlikePost)
+                _feedAdapter.value =
+                    FeedAdapter(feed, ::likePost, ::unlikePost, ::viewPost)
             }
         }
     }
@@ -296,6 +299,12 @@ class SocialMediaViewModel @Inject constructor(
     private fun deletePost(postId: UUID) {
         viewModelScope.launch {
             postRepository.deletePost(postId)
+        }
+    }
+
+    private fun viewPost(postId: UUID) {
+        viewModelScope.launch {
+            postRepository.viewPost(postId)
         }
     }
 }

@@ -1,5 +1,6 @@
 package hse.course.socialnetworkthoughtsandroidapp.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,8 @@ import java.util.UUID
 class FeedAdapter(
     private val feed: List<Feed>,
     private val likePost: (id: UUID) -> Unit,
-    private val unlikePost: (id: UUID) -> Unit
+    private val unlikePost: (id: UUID) -> Unit,
+    private val viewPost: (id: UUID) -> Unit
 ) :
 
     RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
@@ -51,6 +53,7 @@ class FeedAdapter(
         return FeedViewHolder(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(
         feedViewHolder: FeedViewHolder,
         position: Int
@@ -61,7 +64,7 @@ class FeedAdapter(
         feedViewHolder.likes.text = feed[position].likes.toString()
         feedViewHolder.comments.text = feed[position].comments.toString()
         feedViewHolder.reposts.text = feed[position].reposts.toString()
-        feedViewHolder.views.text = feed[position].reposts.toString()
+        feedViewHolder.views.text = feed[position].views.toString()
 
         feedViewHolder.imagesPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         feedViewHolder.imagesPager.adapter = ImagesPagerAdapter(ArrayList())
@@ -108,6 +111,11 @@ class FeedAdapter(
             feedViewHolder.likes.text = feed[position].likes.toString()
         }
 
+        feedViewHolder.itemView.setOnTouchListener { _, _ ->
+            viewPost(feed[position].postId)
+            return@setOnTouchListener true
+        }
+
         feedViewHolder.commentButton.setOnClickListener {
             val activity = activityContext(feedViewHolder) as AppCompatActivity
             activity.supportFragmentManager.beginTransaction()
@@ -125,5 +133,4 @@ class FeedAdapter(
     }
 
     override fun getItemCount() = feed.size
-
 }
